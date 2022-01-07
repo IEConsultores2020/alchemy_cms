@@ -126,8 +126,8 @@ mailer:
   page_layout_name: contact
   forward_to_page: false
   mail_success_page: thanks
-  mail_from: donotreply@visualmetrics.io
-  mail_to: donotreply@visualmetrics.ios
+  mail_from: your.mail@your-domain.com
+  mail_to: your.mail@your-domain.com
   subject: A new contact form message
   fields: [salutation, firstname, lastname, address, zip, city, phone, email, message]
   validate_fields: [lastname, email]

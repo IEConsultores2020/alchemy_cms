@@ -15,6 +15,27 @@ ActiveRecord::Schema.define(version: 2021_12_23_010221) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
+  create_table "accounts", id: :serial, force: :cascade do |t|
+    t.integer "profile_id"
+    t.string "first_name", limit: 255
+    t.string "last_name", limit: 255
+    t.boolean "admin"
+    t.string "image", limit: 255
+    t.string "email", limit: 255, default: "", null: false
+    t.string "encrypted_password", limit: 255, default: "", null: false
+    t.string "reset_password_token", limit: 255
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
+    t.integer "sign_in_count", default: 0
+    t.datetime "current_sign_in_at"
+    t.datetime "last_sign_in_at"
+    t.string "current_sign_in_ip", limit: 255
+    t.string "last_sign_in_ip", limit: 255
+    t.string "alchemy_roles", limit: 50
+    t.index ["email"], name: "index_accounts_on_email", unique: true
+    t.index ["reset_password_token"], name: "index_accounts_on_reset_password_token", unique: true
+  end
+
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -218,6 +239,7 @@ ActiveRecord::Schema.define(version: 2021_12_23_010221) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "menu_type", null: false
+    t.bigint "site_id"
     t.index ["creator_id"], name: "index_alchemy_nodes_on_creator_id"
     t.index ["language_id"], name: "index_alchemy_nodes_on_language_id"
     t.index ["lft"], name: "index_alchemy_nodes_on_lft"
@@ -325,6 +347,38 @@ ActiveRecord::Schema.define(version: 2021_12_23_010221) do
     t.index ["reset_password_token"], name: "index_alchemy_users_on_reset_password_token", unique: true
   end
 
+  create_table "bookings", id: :serial, force: :cascade do |t|
+    t.date "from"
+    t.date "until"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "dummy_models", id: :serial, force: :cascade do |t|
+    t.string "data"
+  end
+
+  create_table "dummy_users", id: :serial, force: :cascade do |t|
+    t.string "email"
+    t.string "password"
+    t.index ["email"], name: "index_dummy_users_on_email"
+  end
+
+  create_table "events", id: :serial, force: :cascade do |t|
+    t.string "name"
+    t.string "hidden_name"
+    t.datetime "starts_at"
+    t.datetime "ends_at"
+    t.time "lunch_starts_at"
+    t.time "lunch_ends_at"
+    t.text "description"
+    t.decimal "entrance_fee", precision: 6, scale: 2
+    t.boolean "published"
+    t.integer "location_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "gutentag_taggings", id: :serial, force: :cascade do |t|
     t.integer "tag_id", null: false
     t.integer "taggable_id", null: false
@@ -345,6 +399,16 @@ ActiveRecord::Schema.define(version: 2021_12_23_010221) do
     t.index ["taggings_count"], name: "index_gutentag_tags_on_taggings_count"
   end
 
+  create_table "locations", id: :serial, force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "series", id: :serial, force: :cascade do |t|
+    t.string "name"
+  end
+
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "alchemy_contents", "alchemy_elements", column: "element_id", on_update: :cascade, on_delete: :cascade
   add_foreign_key "alchemy_elements", "alchemy_pages", column: "page_id", on_update: :cascade, on_delete: :cascade
@@ -352,5 +416,6 @@ ActiveRecord::Schema.define(version: 2021_12_23_010221) do
   add_foreign_key "alchemy_essence_pages", "alchemy_pages", column: "page_id"
   add_foreign_key "alchemy_nodes", "alchemy_languages", column: "language_id"
   add_foreign_key "alchemy_nodes", "alchemy_pages", column: "page_id", on_delete: :cascade
+  add_foreign_key "alchemy_nodes", "alchemy_sites", column: "site_id", on_delete: :cascade
   add_foreign_key "alchemy_pages", "alchemy_languages", column: "language_id"
 end
